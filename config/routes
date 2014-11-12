@@ -1,0 +1,7 @@
+/static StaticR Static getStatic
+
+/favicon.ico FaviconR GET
+
+/ HomeR GET POST
+
+/swag SwagR GET POST

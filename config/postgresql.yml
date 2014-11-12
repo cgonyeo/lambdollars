@@ -1,0 +1,33 @@
+# NOTE: These settings can be overridden by environment variables as well, in
+# particular:
+#
+#    PGHOST
+#    PGPORT
+#    PGUSER
+#    PGPASS
+#    PGDATABASE
+
+Default: &defaults
+  user: lambdollars
+  password: s3kr1t
+  host: host.com
+  port: 5432
+  database: lambdollars
+  poolsize: 10
+
+Development:
+  <<: *defaults
+
+Testing:
+  database: lambdollars_test
+  <<: *defaults
+
+Staging:
+  database: lambdollars_staging
+  poolsize: 100
+  <<: *defaults
+
+Production:
+  database: lambdollars_production
+  poolsize: 100
+  <<: *defaults

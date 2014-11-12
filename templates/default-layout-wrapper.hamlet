@@ -1,0 +1,22 @@
+$newline never
+$doctype 5
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>#{pageTitle pc}
+
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+
+        ^{pageHead pc}
+    <body>
+        <nav .navbar .navbar-default role="navigation">
+            <div .container-fluid>
+                <div .navbar-header>
+                    <a .navbar-brand @{HomeR}>λ$ → $$
+                <div #bs-example-navbar-collapse-1 .collapse .navbar-collapse>
+                    <ul .nav .navbar-nav>
+                        <li>
+                            <a href=@{SwagR}>Swag
+        <div class="container">
+            <div id="main" role="main">
+              ^{pageBody pc}

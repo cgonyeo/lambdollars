@@ -1,0 +1,24 @@
+swags = #{swags}
+for(i in swags) {
+    function foo(i) {
+        updateCost = function() {
+            $("#total" + swags[i]["swagUid"]).html("$" + ($("#numbuying" + swags[i]["swagUid"]).val() * swags[i]["swagCost"]).toFixed(2))
+        }
+        $("#numbuying" + swags[i]["swagUid"]).on('input',updateCost);
+        updateCost();
+        $("#buybtn" + swags[i]["swagUid"]).click(function(event) {
+            if(event) {
+                event.preventDefault();
+                tosend = { uid: swags[i]["swagUid"]
+                         , num:    $("#numbuying" + swags[i]["swagUid"]).val()
+                         }
+                $.post(window.location, JSON.stringify(tosend)).done(
+                    function(data) {
+                        $("#alert").html("<div class=\"alert alert-dismissable alert-success\" role=\"alert\"> <button type=\"button\" class=\"close\" data-dismiss=\"alert\"><span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span></button> <strong>Success!</strong> Squad members successfully saved. </div>");
+                    }
+                );
+            }
+        });
+    }
+    foo(i); //javascript is a bad language. Function level scoping is a bad idea, and if you disagree you're wrong
+}

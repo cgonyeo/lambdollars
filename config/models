@@ -1,0 +1,18 @@
+Swag
+    uid Int64
+    name Text
+    shortdesc Text
+    longdesc Text
+    imageLoc Text
+    cost Double
+    initialamount Int64
+    UniqueSwag uid
+    deriving Generic
+
+Sale
+    swagid Int64 references=Swag
+    purchaser Text
+    numpurchased Int64
+    total Double
+    completed Bool
+    deriving Generic

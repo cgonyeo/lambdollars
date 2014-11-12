@@ -1,0 +1,7 @@
+<nav .navbar .navbar-default role="navigation">
+    <div .container-fluid
+        <div .navbar-header>
+            <a .navbar-brand @{HomeR}>λ$</a>
+        <div #bs-example-navbar-collapse-1 .collapse .navbar-collapse>
+            <ul .nav .navbar-nav>
+                <li ><a href="/trips?page=0">Trips
