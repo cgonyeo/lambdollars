@@ -9,6 +9,7 @@ for(i in swags) {
         $("#buybtn" + swags[i]["swagUid"]).click(function(event) {
             if(event) {
                 event.preventDefault();
+                $("#alert").html("<div class=\"alert alert-dismissable alert-info\" role=\"alert\"> <button type=\"button\" class=\"close\" data-dismiss=\"alert\"><span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span></button> <strong>Don't close the page</strong> Your order is being placed </div>");
                 tosend = { uid: swags[i]["swagUid"]
                          , num: $("#numbuying" + swags[i]["swagUid"]).val()
                          }
