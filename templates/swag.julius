@@ -11,9 +11,15 @@ for(i in swags) {
                 event.preventDefault();
                 $("#alert").html("<div class=\"alert alert-dismissable alert-info\" role=\"alert\"> <button type=\"button\" class=\"close\" data-dismiss=\"alert\"><span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span></button> <strong>Don't close the page</strong> Your order is being placed </div>");
                 tosend = { uid: swags[i]["swagUid"]
-                         , num: $("#numbuying" + swags[i]["swagUid"]).val()
+                         , num: parseInt($("#numbuying" + swags[i]["swagUid"]).val())
                          }
-                $.post(window.location, tosend).done(
+                //$.post(window.location, tosend).done(
+                console.log(JSON.stringify(tosend));
+                $.ajax({
+                    type: "POST",
+                    url: window.location,
+                    data: JSON.stringify(tosend)}
+                ).done(
                     function(data) {
                         if(data == "OUT_OF_INVENTORY") {
                             $("#alert").html("<div class=\"alert alert-dismissable alert-warning\" role=\"alert\"> <button type=\"button\" class=\"close\" data-dismiss=\"alert\"><span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span></button> <strong>Whoops!</strong> Sorry, we're all out of that. </div>");
