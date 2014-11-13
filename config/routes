@@ -5,3 +5,4 @@
 / HomeR GET POST
 
 /swag SwagR GET POST
+/swag/edit SwagAdminR GET

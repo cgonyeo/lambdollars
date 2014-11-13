@@ -1,4 +1,6 @@
 <h1>Swag
+<div .text-center>
+    <button #newbtn .btn .btn-primary type="button">Add Swag</button>
 <div #alert>
 $forall (Swag swagid name shortdesc longdesc imageLoc cost amount) <- swags
     <div .col-sm-3 .panel .panel-default>
@@ -9,7 +11,7 @@ $forall (Swag swagid name shortdesc longdesc imageLoc cost amount) <- swags
         <div .text-center><em>#{amount} items remaining</em>
         <p>#{shortdesc}
         <div .text-right>
-            <button .btn .btn-primary style="margin-bottom:12px;" data-toggle="modal" data-target="#buy#{swagid}">Buy
+            <button .btn .btn-primary style="margin-bottom:12px;" data-toggle="modal" data-target="#buy#{swagid}">Edit
 
         <div #buy#{swagid} .modal .fade tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div .modal-dialog>
@@ -18,26 +20,37 @@ $forall (Swag swagid name shortdesc longdesc imageLoc cost amount) <- swags
                         <button .close type="button" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
                         <h4 class="modal-title" id="myModalLabel">Buy a #{name}</h4>
                     <div class="modal-body">
-                        <div .text-center>
-                            <img src=#{imageLoc} style="width:400px;height:400px">
-                        <p>#{longdesc}
                         <small style="color:DarkGray;">
-                            <em>If you're an on floor, the financial director will bring what you're buying to your room the next time both of you are on floor. If not, expect to be contacted after you place the order.
                         <div .row>
                             <div .col-sm-3 .text-right .control-label>
-                                <strong>Amount
+                                <strong>Name
                             <div .col-sm-9>
-                                <input #numbuying#{swagid} .form-control type="number" required value="1">
+                                <input #name#{swagid} .form-control required value="#{name}">
                         <div .row>
                             <div .col-sm-3 .text-right .control-label>
-                                <strong>Cost Per Item
+                                <strong>Short Description
                             <div .col-sm-9>
-                                <p>$#{cost}
+                                <input #sd#{swagid} .form-control required value="#{shortdesc}">
                         <div .row>
                             <div .col-sm-3 .text-right .control-label>
-                                <strong>Total
+                                <strong>Long Description
                             <div .col-sm-9>
-                                <p #total#{swagid}>
+                                <textarea #ld#{swagid} .form-control rows=5 style="resize:vertical;">#{longdesc}
+                        <div .row>
+                            <div .col-sm-3 .text-right .control-label>
+                                <strong>Change Image
+                            <div .col-sm-9>
+                                <input #image#{swagid} .form-control required type="file">
+                        <div .row>
+                            <div .col-sm-3 .text-right .control-label>
+                                <strong>Cost
+                            <div .col-sm-9>
+                                <input #cost#{swagid} .form-control required type="number" value="#{cost}">
+                        <div .row>
+                            <div .col-sm-3 .text-right .control-label>
+                                <strong>Amount Remaining
+                            <div .col-sm-9>
+                                <input #amount#{swagid} .form-control required type="number" value="#{amount}">
                     <div class="modal-footer">
                         <button .btn .btn-default type="button" data-dismiss="modal">Cancel</button>
                         <button #buybtn#{swagid} .btn .btn-primary type="button" data-dismiss="modal">Purchase</button>

@@ -2,6 +2,7 @@
 module Handler.Swag 
     ( getSwagR
     , postSwagR
+    , getSwagAdminR
     ) where
 
 import Import
@@ -10,8 +11,7 @@ import Data.Int
 
 getSwagR :: Handler Html
 getSwagR = do
-    swagentities :: [Entity Swag] <- runDB $ selectList [] [Asc SwagCost, Asc SwagName]
-    let swags = map (entityVal) swagentities
+    swags <- map entityVal `fmap` (runDB $ selectList [] [Asc SwagCost, Asc SwagName])
     defaultLayout $ do
         setTitle "Swag"
         $(widgetFile "swag")
@@ -44,3 +44,11 @@ postSwagR = do
                        else return (status200,"OUT_OF_INVENTORY")
             Nothing -> return (status404,"SWAG_NOT_FOUND")
     sendResponseStatus status s
+
+getSwagAdminR :: Handler Html
+getSwagAdminR = do
+    --user <- getUser `fmap` waiRequest
+    swags <- map entityVal `fmap` (runDB $ selectList [] [Asc SwagCost, Asc SwagName])
+    defaultLayout $ do
+        setTitle "Swag Admin"
+        $(widgetFile "swagadmin")
