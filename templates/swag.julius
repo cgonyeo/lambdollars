@@ -10,11 +10,19 @@ for(i in swags) {
             if(event) {
                 event.preventDefault();
                 tosend = { uid: swags[i]["swagUid"]
-                         , num:    $("#numbuying" + swags[i]["swagUid"]).val()
+                         , num: $("#numbuying" + swags[i]["swagUid"]).val()
                          }
-                $.post(window.location, JSON.stringify(tosend)).done(
+                $.post(window.location, tosend).done(
                     function(data) {
-                        $("#alert").html("<div class=\"alert alert-dismissable alert-success\" role=\"alert\"> <button type=\"button\" class=\"close\" data-dismiss=\"alert\"><span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span></button> <strong>Success!</strong> Squad members successfully saved. </div>");
+                        if(data == "OUT_OF_INVENTORY") {
+                            $("#alert").html("<div class=\"alert alert-dismissable alert-warning\" role=\"alert\"> <button type=\"button\" class=\"close\" data-dismiss=\"alert\"><span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span></button> <strong>Whoops!</strong> Sorry, we're all out of that. </div>");
+                        } else {
+                            $("#alert").html("<div class=\"alert alert-dismissable alert-success\" role=\"alert\"> <button type=\"button\" class=\"close\" data-dismiss=\"alert\"><span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span></button> <strong>Success!</strong> Purchase successfully placed. </div>");
+                        }
+                    }
+                ).fail(
+                    function(data) {
+                        $("#alert").html("<div class=\"alert alert-dismissable alert-danger\" role=\"alert\"> <button type=\"button\" class=\"close\" data-dismiss=\"alert\"><span aria-hidden=\"true\">&times;</span><span class=\"sr-only\">Close</span></button> <strong>Something went horribly wrong!</strong> Error placing purchase. </div>");
                     }
                 );
             }

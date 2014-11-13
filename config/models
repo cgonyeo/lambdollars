@@ -5,7 +5,7 @@ Swag
     longdesc Text
     imageLoc Text
     cost Double
-    initialamount Int64
+    amount Int64
     UniqueSwag uid
     deriving Generic
 

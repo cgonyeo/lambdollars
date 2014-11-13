@@ -16,6 +16,7 @@ library
                      Foundation
                      Import
                      Model
+                     Utils
                      Settings
                      Settings.StaticFiles
                      Settings.Development
@@ -72,6 +73,8 @@ library
                  , unordered-containers          >= 0.2.5.1
                  , split                         >= 0.2.2
                  , http-types                    >= 0.8.5
+                 , wai                           >= 3.0.2
+                 , containers                    >= 0.5.5.1
 
     -- see https://github.com/yesodweb/yesod/issues/814
     if !os(windows)

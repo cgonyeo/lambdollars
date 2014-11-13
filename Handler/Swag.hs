@@ -1,46 +1,49 @@
 {-# LANGUAGE TupleSections, OverloadedStrings, ScopedTypeVariables #-}
 module Handler.Swag 
     ( getSwagR
+    , postSwagR
     ) where
 
 import Import
-import Model
-import Yesod.Form.Bootstrap3
-    ( BootstrapFormLayout (..), renderBootstrap3, withSmallInput )
-import Text.Julius
-import Data.Monoid
-import Data.Aeson (FromJSON,fromJSON)
-import Data.Int (Int64)
-import Data.Text (Text)
-import Network.HTTP.Types (status201)
+import Network.HTTP.Types (status200,status201,status400)
+import Data.Text.Read (decimal)
 
 getSwagR :: Handler Html
 getSwagR = do
-    swagentities :: [Entity Swag] <- runDB $ selectList [] []
+    swagentities :: [Entity Swag] <- runDB $ selectList [] [Asc SwagCost, Asc SwagName]
     let swags = map (entityVal) swagentities
     defaultLayout $ do
         setTitle "Swag"
         $(widgetFile "swag")
 
-data SwagPurchase = SwagPurchase { uid :: Int64
-                                 , numpurchased :: Int64
-                                 }
-
-instance FromJSON SwagPurchase where
-    parseJSON (Object o) = SwagPurchase
-        <$> o .: "uid"
-        <*> o .: "numpurchased"
-
 postSwagR :: Handler ()
 postSwagR = do
-    (SwagPurchase id num) <- requireJsonBody :: Handler SwagPurchase
-    s <- runDB $ do swagentity <- selectList [swagUid ==. id] []
-                    if length swagentity == 1
-                        then do let [(Swag i n s l p c a)] = entityVal (swagentity !! 0)
-                                    sale = Sale id "bimbotron" num (c * (fromIntegral num)) False
-                                if a - num > 0
-                                    then do insert sale
-                                            return True
-                                    else return False
-                        else return False
-    sendResponseStatus status201 ("CREATED" :: Text)
+    req <- waiRequest
+    let user = getUser req
+    msid <- lookupPostParam "uid"
+    mnum <- lookupPostParam "num"
+    case (msid,mnum) of
+        (Just tsid,Just tnum) -> do
+            let esid = decimal tsid
+                enum = decimal tnum
+            case (esid,enum) of
+                (Right (sid, _), Right (num, _)) -> do
+                    s <- runDB $ do swagentity <- getBy $ UniqueSwag sid
+                                    case swagentity of
+                                        Just (Entity _ (Swag _ _ _ _ _ c a)) ->
+                                               if a - num >= 0
+                                                   then do let sale = Sale sid
+                                                                      user
+                                                                      num
+                                                                      (c * (fromIntegral num))
+                                                                      False
+                                                           _ <- insert sale
+                                                           _ <- updateWhere [SwagUid ==. sid] [SwagAmount =. (a - num)]
+                                                           return True
+                                                   else return False
+                                        Nothing -> return False
+                    if s
+                        then sendResponseStatus status201 ("CREATED" :: Text)
+                        else sendResponseStatus status200 ("OUT_OF_INVENTORY" :: Text)
+                _ -> sendResponseStatus status400 ("BAD_REQUEST2" :: Text)
+        _ -> sendResponseStatus status400 ("BAD_REQUEST1" :: Text)

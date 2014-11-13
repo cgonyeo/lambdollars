@@ -1,9 +1,5 @@
 {-# LANGUAGE DeriveGeneric, FlexibleInstances #-}
-module Model 
-    ( Swag(..)
-    , Sale(..)
-    , migrateAll
-    ) where
+module Model where
 
 import Yesod
 import Data.Text (Text)
