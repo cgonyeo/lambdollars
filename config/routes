@@ -6,3 +6,4 @@
 
 /swag SwagR GET POST
 /swag/edit SwagAdminR GET
+/swag/edit/#Int SwagEditR POST

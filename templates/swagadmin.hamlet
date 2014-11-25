@@ -1,6 +1,6 @@
 <h1>Swag
 <div .text-center>
-    <button #newbtn .btn .btn-primary type="button">Add Swag</button>
+    <button .btn .btn-primary style="margin-bottom:12px;" data-toggle="modal" data-target="#buynew">Add Swag
 <div #alert>
 $forall (Swag swagid name shortdesc longdesc imageLoc cost amount) <- swags
     <div .col-sm-3 .panel .panel-default>
@@ -9,48 +9,36 @@ $forall (Swag swagid name shortdesc longdesc imageLoc cost amount) <- swags
         <div .text-center>
             <img src=#{imageLoc} style="width:200px;height:200px">
         <div .text-center><em>#{amount} items remaining</em>
+        <h4 .text-center>Short Description
         <p>#{shortdesc}
+        <h4 .text-center>Long Description
+        <p>#{longdesc}
         <div .text-right>
             <button .btn .btn-primary style="margin-bottom:12px;" data-toggle="modal" data-target="#buy#{swagid}">Edit
 
-        <div #buy#{swagid} .modal .fade tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div .modal-dialog>
-                <div .modal-content>
-                    <div .modal-header>
-                        <button .close type="button" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
-                        <h4 class="modal-title" id="myModalLabel">Buy a #{name}</h4>
-                    <div class="modal-body">
-                        <small style="color:DarkGray;">
-                        <div .row>
-                            <div .col-sm-3 .text-right .control-label>
-                                <strong>Name
-                            <div .col-sm-9>
-                                <input #name#{swagid} .form-control required value="#{name}">
-                        <div .row>
-                            <div .col-sm-3 .text-right .control-label>
-                                <strong>Short Description
-                            <div .col-sm-9>
-                                <input #sd#{swagid} .form-control required value="#{shortdesc}">
-                        <div .row>
-                            <div .col-sm-3 .text-right .control-label>
-                                <strong>Long Description
-                            <div .col-sm-9>
-                                <textarea #ld#{swagid} .form-control rows=5 style="resize:vertical;">#{longdesc}
-                        <div .row>
-                            <div .col-sm-3 .text-right .control-label>
-                                <strong>Change Image
-                            <div .col-sm-9>
-                                <input #image#{swagid} .form-control required type="file">
-                        <div .row>
-                            <div .col-sm-3 .text-right .control-label>
-                                <strong>Cost
-                            <div .col-sm-9>
-                                <input #cost#{swagid} .form-control required type="number" value="#{cost}">
-                        <div .row>
-                            <div .col-sm-3 .text-right .control-label>
-                                <strong>Amount Remaining
-                            <div .col-sm-9>
-                                <input #amount#{swagid} .form-control required type="number" value="#{amount}">
-                    <div class="modal-footer">
-                        <button .btn .btn-default type="button" data-dismiss="modal">Cancel</button>
-                        <button #buybtn#{swagid} .btn .btn-primary type="button" data-dismiss="modal">Purchase</button>
+<div #buynew .modal .fade tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div .modal-dialog>
+        <div .modal-content>
+            <div .modal-header>
+                <button .close type="button" data-dismiss="modal">
+                    <span aria-hidden="true">&times;
+                    <span class="sr-only">Close
+                <h4 class="modal-title" id="myModalLabel">Adding New Swag
+            <div class="modal-body">
+                <form method=post action=@{SwagEditR -1} enctype=#{newFormEnctype}>
+                    ^{newFormWidget}
+                    <input type="submit" value="Save">
+
+$forall (swagid,formWidget,formEnctype) <- formsAndIds
+    <div #buy#{swagid} .modal .fade tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div .modal-dialog>
+            <div .modal-content>
+                <div .modal-header>
+                    <button .close type="button" data-dismiss="modal">
+                        <span aria-hidden="true">&times;
+                        <span class="sr-only">Close
+                    <h4 class="modal-title" id="myModalLabel">Modifying Item Number #{swagid}
+                <div class="modal-body">
+                    <form method=post action=@{SwagEditR $ fromIntegral swagid} enctype=#{formEnctype}>
+                        ^{formWidget}
+                        <input type="submit" value="Save">
