@@ -30,7 +30,7 @@ postSwagBuyR sidi = do
                 swag <- get $ SwagKey sid
                 case swag of
                     Just (Swag _ n _ _ _ c a) -> do
-                           if a - num >= 0
+                           if a - num >= 0 && num > 0
                                then do
                                    let sale = Sale sid
                                               user
