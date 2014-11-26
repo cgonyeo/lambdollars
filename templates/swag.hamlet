@@ -29,6 +29,12 @@ $forall ((Swag swagid name shortdesc longdesc imageLoc cost amount),(widget,enct
                                     <strong>Cost Per Item
                                 <div .col-sm-9>
                                     <p>$#{cost}
+                            <div .row>
+                                <div .col-sm-3 .text-right .control-label>
+                                    <strong>Num Remaining
+                                <div .col-sm-9>
+                                    <p>#{amount}
+                            <br>
                             $if amount > 0
                                 ^{widget}
                                 <input type="submit" value="Buy">

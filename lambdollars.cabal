@@ -22,6 +22,8 @@ library
                      Settings.Development
                      Handler.Home
                      Handler.Swag
+                     Handler.SwagForms
+                     Handler.SwagAdmin
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT
