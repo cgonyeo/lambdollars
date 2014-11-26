@@ -1,6 +1,6 @@
 <h1>Swag
 <div #alert>
-$forall (Swag swagid name shortdesc longdesc imageLoc cost amount) <- swags
+$forall ((Swag swagid name shortdesc longdesc imageLoc cost amount),(widget,enctype)) <- swagsandforms
     <div .col-sm-3 .panel .panel-default>
         <h3 .text-center>#{name}
         <h4 .text-center>$#{cost}
@@ -9,7 +9,7 @@ $forall (Swag swagid name shortdesc longdesc imageLoc cost amount) <- swags
         <div .text-center><em>#{amount} items remaining</em>
         <p>#{shortdesc}
         <div .text-right>
-            <button .btn .btn-primary style="margin-bottom:12px;" data-toggle="modal" data-target="#buy#{swagid}">Buy
+            <button .btn .btn-primary style="margin-bottom:12px;" data-toggle="modal" data-target="#buy#{swagid}">More Info
 
         <div #buy#{swagid} .modal .fade tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
             <div .modal-dialog>
@@ -18,26 +18,19 @@ $forall (Swag swagid name shortdesc longdesc imageLoc cost amount) <- swags
                         <button .close type="button" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
                         <h4 class="modal-title" id="myModalLabel">Buy a #{name}</h4>
                     <div class="modal-body">
-                        <div .text-center>
-                            <img src=#{imageLoc} style="width:400px;height:400px">
-                        <p>#{longdesc}
-                        <small style="color:DarkGray;">
-                            <em>If you're an on floor, the financial director will bring what you're buying to your room the next time both of you are on floor. If not, expect to be contacted after you place the order.
-                        <div .row>
-                            <div .col-sm-3 .text-right .control-label>
-                                <strong>Amount
-                            <div .col-sm-9>
-                                <input #numbuying#{swagid} .form-control type="number" required value="1">
-                        <div .row>
-                            <div .col-sm-3 .text-right .control-label>
-                                <strong>Cost Per Item
-                            <div .col-sm-9>
-                                <p>$#{cost}
-                        <div .row>
-                            <div .col-sm-3 .text-right .control-label>
-                                <strong>Total
-                            <div .col-sm-9>
-                                <p #total#{swagid}>
-                    <div class="modal-footer">
-                        <button .btn .btn-default type="button" data-dismiss="modal">Cancel</button>
-                        <button #buybtn#{swagid} .btn .btn-primary type="button" data-dismiss="modal">Purchase</button>
+                        <form method=post action=@{SwagBuyR $ fromIntegral swagid} enctype=#{enctype}>
+                            <div .text-center>
+                                <img src=#{imageLoc} style="width:400px;height:400px">
+                            <p>#{longdesc}
+                            <small style="color:DarkGray;">
+                                <em>If you're an on floor, the financial director will bring what you're buying to your room the next time both of you are on floor. If not, expect to be contacted after you place the order.
+                            <div .row>
+                                <div .col-sm-3 .text-right .control-label>
+                                    <strong>Cost Per Item
+                                <div .col-sm-9>
+                                    <p>$#{cost}
+                            $if amount > 0
+                                ^{widget}
+                                <input type="submit" value="Buy">
+                            $else
+                                <p>Sorry, currently out of stock

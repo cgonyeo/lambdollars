@@ -4,6 +4,8 @@
 
 / HomeR GET POST
 
-/swag SwagR GET POST
+/swag SwagR GET
+/swag/buy/#Int SwagBuyR POST
 /swag/edit SwagAdminR GET
 /swag/edit/#Int SwagEditR POST
+/swag/del/#Int SwagDelR POST

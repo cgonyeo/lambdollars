@@ -1,67 +1,75 @@
 {-# LANGUAGE TupleSections, OverloadedStrings, ScopedTypeVariables #-}
 module Handler.Swag 
     ( getSwagR
-    , postSwagR
+    , postSwagBuyR
     , getSwagAdminR
     , postSwagEditR
+    , postSwagDelR
     ) where
 
 import Import
 import Utils
-import Network.HTTP.Types (status200,status201,status404)
 import Data.Int
 import Data.Hashable
-import Control.Monad
 import Yesod.Form.Bootstrap3
     ( withSmallInput )
 
 getSwagR :: Handler Html
 getSwagR = do
     swags <- map entityVal `fmap` (runDB $ selectList [] [Asc SwagCost, Asc SwagName])
+    forms <- mapM (\_ -> generateFormPost swagBuyForm) swags
+    let swagsandforms = zip swags forms
     defaultLayout $ do
         setTitle "Swag"
         $(widgetFile "swag")
 
-data SwagPurchase = SwagPurchase Int64 Int64
-
-instance FromJSON SwagPurchase where
-    parseJSON (Object o) = SwagPurchase
-                            <$> o .: "uid"
-                            <*> o .: "num"
-    parseJSON _ = mzero
-
-postSwagR :: Handler ()
-postSwagR = do
-    (SwagPurchase sid num) <- requireJsonBody :: Handler SwagPurchase
+postSwagBuyR :: Int -> Handler Html
+postSwagBuyR sidi = do
+    let sid = fromIntegral sidi
     user <- getUser `fmap` waiRequest
-    (status,s :: Text) <- runDB $ do
-        swag <- get $ SwagKey sid
-        case swag of
-            Just (Swag _ _ _ _ _ c a) ->
-                   if a - num >= 0
-                       then do
-                           let sale = Sale sid
-                                      user
-                                      num
-                                      (c * (fromIntegral num))
-                                      False
-                           _ <- insert sale
-                           _ <- update (SwagKey sid) [SwagAmount =. (a - num)]
-                           return (status201,"SUCCESS")
-                       else return (status200,"OUT_OF_INVENTORY")
-            Nothing -> return (status404,"SWAG_NOT_FOUND")
-    sendResponseStatus status s
+    ((result, widget), enctype) <- runFormPost $ swagBuyForm
+    case result of
+        FormSuccess (SwagBuy num) -> do
+            runDB $ do
+                swag <- get $ SwagKey sid
+                case swag of
+                    Just (Swag _ _ _ _ _ c a) ->
+                           if a - num >= 0
+                               then do
+                                   let sale = Sale sid
+                                              user
+                                              num
+                                              (c * (fromIntegral num))
+                                              False
+                                   _ <- insert sale
+                                   update (SwagKey sid) [SwagAmount =. (a - num)]
+                               else return ()
+                    Nothing -> return ()
+            getSwagR
+        _ -> defaultLayout
+            [whamlet|
+                <p>There was a problem with your input. Please try again.
+                <form method=post action=@{SwagBuyR sidi} enctype=#{enctype}>
+                    ^{widget}
+                    <input type="submit" value="Buy">
+            |]
 
 getSwagAdminR :: Handler Html
 getSwagAdminR = do
     --user <- getUser `fmap` waiRequest
     swags <- map entityVal `fmap` (runDB $ selectList [] [Asc SwagCost, Asc SwagName])
-    forms <- mapM (\_ -> generateFormPost swagSaveForm) swags
+    forms <- mapM (\(Swag _ n sd ld _ c a) -> generateFormPost $ prefillSwagSaveForm n sd ld c a) swags
     let formsAndIds = zipWith (\(Swag sid _ _ _ _ _ _) (fwidg,fenc) -> (sid,fwidg,fenc)) swags forms
     (newFormWidget,newFormEnctype) <- generateFormPost swagSaveForm
     defaultLayout $ do
         setTitle "Swag Admin"
         $(widgetFile "swagadmin")
+
+data SwagBuy = SwagBuy Int64
+
+swagBuyForm :: Form SwagBuy
+swagBuyForm = renderLambdollarsForm $ SwagBuy
+    <$> areq intField (withSmallInput "Amount") Nothing
 
 swagSaveForm :: Form (Text,Text,Text,FileInfo,Double,Int64)
 swagSaveForm = renderLambdollarsForm $ (,,,,,)
@@ -71,6 +79,15 @@ swagSaveForm = renderLambdollarsForm $ (,,,,,)
     <*> fileAFormReq "Upload an image"
     <*> areq doubleField (withSmallInput "Cost") Nothing
     <*> areq intField (withSmallInput "Amount in Stock") Nothing
+
+prefillSwagSaveForm :: Text -> Text -> Text -> Double -> Int64 -> Form (Text,Text,Text,FileInfo,Double,Int64)
+prefillSwagSaveForm n sd ld c a = renderLambdollarsForm $ (,,,,,)
+    <$> areq textField (withSmallInput "Name") (Just n)
+    <*> areq textField (withSmallInput "Short Description") (Just sd)
+    <*> areq textField (withSmallInput "Long Description") (Just ld)
+    <*> fileAFormReq "Upload an image"
+    <*> areq doubleField (withSmallInput "Cost") (Just c)
+    <*> areq intField (withSmallInput "Amount in Stock") (Just a)
 
 postSwagEditR :: Int -> Handler Html
 postSwagEditR sid = do
@@ -102,7 +119,13 @@ postSwagEditR sid = do
         _ -> defaultLayout
             [whamlet|
                 <p>There was a problem with your input. Please try again.
-                <form method=post action=@{SwagAdminR} enctype=#{enctype}>
+                <form method=post action=@{SwagEditR $ fromIntegral sid} enctype=#{enctype}>
                     ^{widget}
-                    <button>Submit
+                    <input type="submit" value="Save">
             |]
+
+postSwagDelR :: Int -> Handler Html
+postSwagDelR sid = do
+    user <- getUser `fmap` waiRequest
+    runDB $ delete $ SwagKey $ fromIntegral sid
+    getSwagAdminR

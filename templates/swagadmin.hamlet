@@ -14,6 +14,8 @@ $forall (Swag swagid name shortdesc longdesc imageLoc cost amount) <- swags
         <h4 .text-center>Long Description
         <p>#{longdesc}
         <div .text-right>
+            <form method=post action=@{SwagDelR $ fromIntegral swagid}>
+                <button .btn .btn-danger style="margin-bottom:12px;">Delete
             <button .btn .btn-primary style="margin-bottom:12px;" data-toggle="modal" data-target="#buy#{swagid}">Edit
 
 <div #buynew .modal .fade tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
