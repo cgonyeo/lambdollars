@@ -22,13 +22,14 @@ postSwagBuyR :: Int -> Handler Html
 postSwagBuyR sidi = do
     let sid = fromIntegral sidi
     user <- getUser `fmap` waiRequest
+    (LdapUser cn mail _ _ _) <- getLdapUser
     ((result, widget), enctype) <- runFormPost $ swagBuyForm
     case result of
         FormSuccess (SwagBuy num) -> do
             msg <- runDB $ do
                 swag <- get $ SwagKey sid
                 case swag of
-                    Just (Swag _ _ _ _ _ c a) ->
+                    Just (Swag _ n _ _ _ c a) -> do
                            if a - num >= 0
                                then do
                                    let sale = Sale sid
@@ -38,6 +39,8 @@ postSwagBuyR sidi = do
                                               False
                                    _ <- insert sale
                                    update (SwagKey sid) [SwagAmount =. (a - num)]
+                                   liftBase $ sendEmail "financial@csh.rit.edu" "Order placed" $ pack $ 
+                                       (unpack cn) ++ " wants to buy " ++ (show num) ++ " of " ++ (unpack n)
                                    return "Order successful"
                                else return $ "We only have " ++ (show a) ++ " of those in stock. You asked for " ++ (show num) ++ "."
                     Nothing -> return "You seem to have requested nonexistent swag. Please try again, or email financial@csh.rit.edu with what you want."

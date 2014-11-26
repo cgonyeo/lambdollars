@@ -36,9 +36,14 @@ postSwagEditR sid = do
                 filepath = "." ++ filename
                 filenamet = pack filename
             runDB $ if sid == -1
-                        then do [(Swag sid' _ _ _ _ _ _)] <- (map entityVal . (take 1)) `fmap` selectList [] [Desc SwagUid]
-                                _ <- insert (Swag (sid'+1) sname sd ld filenamet c a)
-                                return ()
+                        then do lastswags <- (map entityVal . (take 1)) `fmap` selectList [] [Desc SwagUid]
+                                case lastswags of
+                                    [(Swag sid' _ _ _ _ _ _)] -> do
+                                        _ <- insert (Swag (sid'+1) sname sd ld filenamet c a)
+                                        return ()
+                                    [] -> do
+                                        _ <- insert (Swag 0 sname sd ld filenamet c a)
+                                        return ()
                         else let updates = [ SwagName      =. sname
                                            , SwagShortdesc =. sd
                                            , SwagLongdesc  =. ld

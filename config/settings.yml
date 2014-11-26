@@ -1,7 +1,7 @@
 Default: &defaults
   host: "*4" # any IPv4 host
-  port: 9132
-  approot: "http://localhost:3000"
+  port: 9123
+  approot: "https://financial.csh.rit.edu"
   copyright: Insert copyright statement here
   #analytics: UA-YOURCODE
 

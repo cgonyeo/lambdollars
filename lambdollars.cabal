@@ -17,6 +17,7 @@ library
                      Import
                      Model
                      Utils
+                     Utils.Email
                      Utils.Ldap
                      Utils.Protobuf
                      Utils.Session
@@ -87,6 +88,7 @@ library
                  , hex                           >= 0.1        && <0.2
                  , protobuf                      >= 0.2        && <0.3
                  , cereal                        >= 0.4        && <0.5
+                 , smtp-mail                     >= 0.1.4.0
 
     -- see https://github.com/yesodweb/yesod/issues/814
     if !os(windows)

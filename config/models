@@ -16,7 +16,6 @@ Sale
     total Double
     completed Bool
     Foreign Swag fkswag uid
-    Foreign User fkuser username
     deriving Generic
 
 User

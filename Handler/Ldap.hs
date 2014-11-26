@@ -12,6 +12,6 @@ getLdapingR = defaultLayout $ do
 getLdapedR :: Handler Html
 getLdapedR = do
     user <- getUser `fmap` waiRequest
-    lu <- liftBase $ getUsersLdap user
+    lu <- getUsersLdap user
     setSession "user" $ serLdapUser lu
     redirectUltDest SwagR
