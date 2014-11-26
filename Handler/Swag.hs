@@ -10,6 +10,7 @@ import Handler.SwagForms
 
 getSwagR :: Handler Html
 getSwagR = do
+    (LdapUser cn mail act onfl fina) <- getLdapUser
     swags <- map entityVal `fmap` (runDB $ selectList [] [Asc SwagCost, Asc SwagName])
     forms <- mapM (\_ -> generateFormPost swagBuyForm) swags
     let swagsandforms = zip swags forms
@@ -24,7 +25,7 @@ postSwagBuyR sidi = do
     ((result, widget), enctype) <- runFormPost $ swagBuyForm
     case result of
         FormSuccess (SwagBuy num) -> do
-            runDB $ do
+            msg <- runDB $ do
                 swag <- get $ SwagKey sid
                 case swag of
                     Just (Swag _ _ _ _ _ c a) ->
@@ -37,8 +38,10 @@ postSwagBuyR sidi = do
                                               False
                                    _ <- insert sale
                                    update (SwagKey sid) [SwagAmount =. (a - num)]
-                               else return ()
-                    Nothing -> return ()
+                                   return "Order successful"
+                               else return $ "We only have " ++ (show a) ++ " of those in stock. You asked for " ++ (show num) ++ "."
+                    Nothing -> return "You seem to have requested nonexistent swag. Please try again, or email financial@csh.rit.edu with what you want."
+            setMessage $ toHtml msg
             getSwagR
         _ -> defaultLayout
             [whamlet|

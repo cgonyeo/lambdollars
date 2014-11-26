@@ -12,7 +12,7 @@ import Data.Hashable
 
 getSwagAdminR :: Handler Html
 getSwagAdminR = do
-    --user <- getUser `fmap` waiRequest
+    restrictToAdmins
     swags <- map entityVal `fmap` (runDB $ selectList [] [Asc SwagCost, Asc SwagName])
     forms <- mapM (\(Swag _ n sd ld _ c a) -> generateFormPost $ prefillSwagSaveForm n sd ld c a) swags
     let formsAndIds = zipWith (\(Swag sid _ _ _ _ _ _) (fwidg,fenc) -> (sid,fwidg,fenc)) swags forms
@@ -23,9 +23,10 @@ getSwagAdminR = do
 
 postSwagEditR :: Int -> Handler Html
 postSwagEditR sid = do
+    restrictToAdmins
     ((result, widget), enctype) <- runFormPost $ swagSaveForm
     case result of
-        FormSuccess (name,sd,ld,fi,c,a) -> do
+        FormSuccess (sname,sd,ld,fi,c,a) -> do
             let fname = hash $ fileName fi
                 fnametoks = splitOn "." $ fileName fi
                 ext = if length fnametoks > 0
@@ -36,9 +37,9 @@ postSwagEditR sid = do
                 filenamet = pack filename
             runDB $ if sid == -1
                         then do [(Swag sid' _ _ _ _ _ _)] <- (map entityVal . (take 1)) `fmap` selectList [] [Desc SwagUid]
-                                _ <- insert (Swag (sid'+1) name sd ld filenamet c a)
+                                _ <- insert (Swag (sid'+1) sname sd ld filenamet c a)
                                 return ()
-                        else let updates = [ SwagName      =. name
+                        else let updates = [ SwagName      =. sname
                                            , SwagShortdesc =. sd
                                            , SwagLongdesc  =. ld
                                            , SwagCost      =. c
@@ -58,6 +59,6 @@ postSwagEditR sid = do
 
 postSwagDelR :: Int -> Handler Html
 postSwagDelR sid = do
-    user <- getUser `fmap` waiRequest
+    restrictToAdmins
     runDB $ delete $ SwagKey $ fromIntegral sid
     getSwagAdminR

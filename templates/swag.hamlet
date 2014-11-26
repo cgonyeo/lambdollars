@@ -1,4 +1,6 @@
-<h1>Swag
+<h1>CSH Swag
+<p>Here you can find all swag currently for sale at CSH. When you place an order the current financial director gets notified that you want to buy something, and will reach out to you.
+<p>#{show (LdapUser cn mail act onfl fina)}
 <div #alert>
 $forall ((Swag swagid name shortdesc longdesc imageLoc cost amount),(widget,enctype)) <- swagsandforms
     <div .col-sm-3 .panel .panel-default>
@@ -40,3 +42,5 @@ $forall ((Swag swagid name shortdesc longdesc imageLoc cost amount),(widget,enct
                                 <input type="submit" value="Buy">
                             $else
                                 <p>Sorry, currently out of stock
+$if fina
+    <a href=@{SwagAdminR}>Edit swag

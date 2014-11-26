@@ -9,3 +9,6 @@
 /swag/edit SwagAdminR GET
 /swag/edit/#Int SwagEditR POST
 /swag/del/#Int SwagDelR POST
+
+/ldaping LdapingR GET
+/ldaped LdapedR GET
