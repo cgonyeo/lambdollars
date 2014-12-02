@@ -49,17 +49,20 @@ getUsersLdap uid = do
         ([(LDAPEntry _ res)],[(LDAPEntry _ finres)]) -> 
             case ( getValue "cn"      res
                  , getValue "mail"    res
-                 , getValue "active"  res
-                 , getValue "onfloor" res
                  ) of
-                    (Just cn,Just mail,Just act,Just onfloor) ->
+                    (Just cn,Just mail) ->
                             let tcn   = pack cn
                                 tmail = pack mail
-                                bact  = act == "1"
-                                bonfl = onfloor == "1"
                                 dn = map toLower $ "uid=" ++ (unpack uid) ++ ",ou=Users,dc=csh,dc=rit,dc=edu"
-                            in case getValues "head" finres of
-                                       Just heads -> return $ LdapUser tcn tmail bact bonfl (dn `elem` (map (\x -> map toLower x) heads))
-                                       Nothing -> return $ LdapUser tcn tmail bact bonfl False
+                            in case ( getValues "head" finres
+                                    , getValue "active"  res
+                                    , getValue "onfloor" res
+                                    ) of
+                                       (Just heads,Just act,Just onf) ->
+                                            let bact = act == "1"
+                                                bonf = onf == "1"
+                                                lheads = map (\x -> map toLower x) heads
+                                            in return $ LdapUser tcn tmail bact bonf (dn `elem` lheads)
+                                       (_,_,_) -> return $ LdapUser tcn tmail False False False
                     _ -> permissionDenied "I had problems loading some of your fields from LDAP. Guess you're not a real person."
         _ -> permissionDenied "I couldn't find you in LDAP. You must not be a real person."

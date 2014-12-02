@@ -45,7 +45,7 @@ postSwagBuyR sidi = do
                                else return $ "We only have " ++ (show a) ++ " of those in stock. You asked for " ++ (show num) ++ "."
                     Nothing -> return "You seem to have requested nonexistent swag. Please try again, or email financial@csh.rit.edu with what you want."
             setMessage $ toHtml msg
-            getSwagR
+            redirect SwagR
         _ -> defaultLayout
             [whamlet|
                 <p>There was a problem with your input. Please try again.

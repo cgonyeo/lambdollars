@@ -8,7 +8,7 @@ $if fina
 $forall ((Swag swagid name shortdesc longdesc imageLoc cost amount),(widget,enctype)) <- swagsandforms
     <div .col-sm-3 .panel .panel-default>
         <h3 .text-center>#{name}
-        <h4 .text-center>$#{cost}
+        <h4 .text-center>#{prettyMoney cost}
         <div .text-center>
             <img src=#{imageLoc} style="width:200px;height:200px">
         <div .text-center><em>#{amount} items remaining</em>
@@ -33,7 +33,7 @@ $forall ((Swag swagid name shortdesc longdesc imageLoc cost amount),(widget,enct
                                 <div .col-sm-3 .text-right .control-label>
                                     <strong>Cost Per Item
                                 <div .col-sm-9>
-                                    <p>$#{cost}
+                                    <p>#{prettyMoney cost}
                             <div .row>
                                 <div .col-sm-3 .text-right .control-label>
                                     <strong>Num Remaining

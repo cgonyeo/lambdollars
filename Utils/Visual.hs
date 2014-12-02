@@ -1,6 +1,9 @@
+{-# LANGUAGE ScopedTypeVariables #-}
 module Utils.Visual where
 
 import Import
+import Data.List.Split
+import Data.List
 
 --I want a different layout for my forms than what yesod's renderBootstrap3
 --will produce. This makes all the labels and fields line up with bootstrap's
@@ -47,3 +50,11 @@ helpWidget view = [whamlet|
 --https://hackage.haskell.org/package/yesod-form-1.3.8/docs/src/Yesod-Form-Bootstrap3.html
 bootstrapSubmitId :: Text
 bootstrapSubmitId = "b:ootstrap___unique__:::::::::::::::::submit-id"
+
+--Returns nicely formatted money
+prettyMoney :: Double -> String
+prettyMoney n = "$" ++ si ++ "." ++ sd
+    where i :: Int64 = truncate n
+          d :: Int64 = truncate $ 100 * (n - (fromIntegral i))
+          si = reverse (intercalate "," $ chunksOf 3 $ reverse $ show $ i)
+          sd = show d
