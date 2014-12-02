@@ -29,7 +29,7 @@ getUsersLdap uid = do
     (entries,finentries) <- liftBase $ do
                   print $ "Fetching uid " ++ (unpack uid)
                   l <- ldapInitialize "ldaps://ldap.csh.rit.edu"
-                  ldapSimpleBind l "uid=dgonyeo,ou=users,dc=csh,dc=rit,dc=edu" "lolpassword"
+                  ldapSimpleBind l "uid=dgonyeo,ou=users,dc=csh,dc=rit,dc=edu" "stealthin1210393"
                   entries <- ldapSearch
                               l
                               (Just "dc=csh,dc=rit,dc=edu")
