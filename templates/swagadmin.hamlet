@@ -5,7 +5,7 @@
 $forall (Swag swagid name shortdesc longdesc imageLoc cost amount) <- swags
     <div .col-sm-3 .panel .panel-default>
         <h3 .text-center>#{name}
-        <h4 .text-center>$#{cost}
+        <h4 .text-center>#{prettyMoney cost}
         <div .text-center>
             <img src=#{imageLoc} style="width:200px;height:200px">
         <div .text-center><em>#{amount} items remaining</em>

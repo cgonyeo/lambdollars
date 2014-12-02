@@ -57,4 +57,6 @@ prettyMoney n = "$" ++ si ++ "." ++ sd
     where i :: Int64 = truncate n
           d :: Int64 = truncate $ 100 * (n - (fromIntegral i))
           si = reverse (intercalate "," $ chunksOf 3 $ reverse $ show $ i)
-          sd = show d
+          sd = if d < 10
+                then show d
+                else (show d) ++ "0"
