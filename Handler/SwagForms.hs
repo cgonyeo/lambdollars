@@ -3,7 +3,6 @@ module Handler.SwagForms where
 import Import
 import Utils
 import Yesod.Form.Bootstrap3
-    ( withSmallInput )
 
 data SwagBuy = SwagBuy Int64
 
@@ -28,3 +27,10 @@ prefillSwagSaveForm n sd ld c a = renderLambdollarsForm $ (,,,,,)
     <*> fileAFormReq "Upload an image"
     <*> areq doubleField (withSmallInput "Cost") (Just c)
     <*> areq intField (withSmallInput "Amount in Stock") (Just a)
+
+saveSaleForm :: Int64 -> Double -> Bool -> Form (Int64,Double,Bool,Bool)
+saveSaleForm num total comp = renderLambdollarsTableForm $ (,,,)
+    <$> areq intField  (withSmallInput "Num Purchased") (Just num)
+    <*> areq doubleField (withSmallInput "Total") (Just total)
+    <*> areq checkBoxField (withSmallInput "Delete") (Just False)
+    <*> areq checkBoxField (withSmallInput "Completed") (Just comp)

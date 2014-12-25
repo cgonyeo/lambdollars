@@ -28,6 +28,7 @@ import Yesod.Core.Types (loggerSet, Logger (Logger))
 import Handler.Home
 import Handler.Swag
 import Handler.SwagAdmin
+import Handler.SwagOrders
 import Handler.Ldap
 
 -- This line actually creates our YesodDispatch instance. It is the second half

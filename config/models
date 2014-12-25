@@ -11,11 +11,13 @@ Swag
 
 Sale
     uid Int64
+    suid Int64
     username Text
     numpurchased Int64
     total Double
     completed Bool
     Foreign Swag fkswag uid
+    Primary suid
     deriving Generic
 
 User

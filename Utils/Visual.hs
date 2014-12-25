@@ -36,6 +36,24 @@ renderLambdollarsForm aform fragment = do
                   |]
     return (res, widget)
 
+--Renders a form as a row in a table
+renderLambdollarsTableForm :: Monad m => FormRender m a
+renderLambdollarsTableForm aform fragment = do
+    (res, views') <- aFormToForm aform
+    let views = views' []
+        has (Just _) = True
+        has Nothing  = False
+        widget = [whamlet|
+            $newline never
+            #{fragment}
+            $forall view <- views
+                <div :fvRequired view:.required :not $ fvRequired view:.optional :has $ fvErrors view:.has-error>
+                    <td>
+                        ^{fvInput view}
+                        ^{helpWidget view}
+                  |]
+    return (res, widget)
+
 --Used internally in Yesod.Form.Bootstrap3, since I'm copy/paste/modifying
 --their renderBootstrap3, this is useful here.
 helpWidget :: FieldView site -> WidgetT site IO ()

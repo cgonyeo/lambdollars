@@ -28,11 +28,16 @@ postSwagBuyR sidi = do
         FormSuccess (SwagBuy num) -> do
             msg <- runDB $ do
                 swag <- get $ SwagKey sid
+                lastsale <- (map entityVal . (take 1)) `fmap` selectList [] [Desc SaleSuid]
+                let next_suid = case lastsale of
+                                 [(Sale _ suid _ _ _ _)] -> suid + 1
+                                 _ ->  0
                 case swag of
                     Just (Swag _ n _ _ _ c a) -> do
                            if a - num >= 0 && num > 0
                                then do
                                    let sale = Sale sid
+                                              next_suid
                                               user
                                               num
                                               (c * (fromIntegral num))

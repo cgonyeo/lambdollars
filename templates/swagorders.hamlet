@@ -1,0 +1,41 @@
+<div #alert>
+<h1>Placed Swag Orders
+<table .table .table-striped>
+    <tr>
+        <th>Purchaser
+        <th>Item
+        <th>Amount
+        <th>Total Cost
+        <th>Delete Order
+        <th>Completed
+        <th>
+    $forall (user,item,sid,fwidg,fenc) <- ncformsAndIds
+        <tr>
+            <form .form-inline method=post action=@{SwagOrdersPR $ fromIntegral sid} enctype=#{fenc}>
+                <td>
+                    <label>#{user}
+                <td>
+                    <label>#{item}
+                ^{fwidg}
+                <td>
+                    <button type="submit" .btn .btn-default>Update
+<h1>Completed Swag Orders
+<table .table .table-striped>
+    <tr>
+        <th>Purchaser
+        <th>Item
+        <th>Amount
+        <th>Total Cost
+        <th>Delete Order
+        <th>Completed
+        <th>
+    $forall (user,item,sid,fwidg,fenc) <- cformsAndIds
+        <tr>
+            <form .form-inline method=post action=@{SwagOrdersPR $ fromIntegral sid} enctype=#{fenc}>
+                <td>
+                    <label>#{user}
+                <td>
+                    <label>#{item}
+                ^{fwidg}
+                <td>
+                    <button type="submit" .btn .btn-default>Update

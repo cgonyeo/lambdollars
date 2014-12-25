@@ -29,6 +29,7 @@ library
                      Handler.Swag
                      Handler.SwagForms
                      Handler.SwagAdmin
+                     Handler.SwagOrders
                      Handler.Ldap
 
     if flag(dev) || flag(library-only)

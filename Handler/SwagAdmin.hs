@@ -53,7 +53,7 @@ postSwagEditR sid = do
                                            ]
                              in update (SwagKey $ fromIntegral sid) updates
             liftBase $ fileMove fi $ filepath
-            getSwagAdminR
+            redirect SwagAdminR
         _ -> defaultLayout
             [whamlet|
                 <p>There was a problem with your input. Please try again.
