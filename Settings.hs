@@ -66,11 +66,21 @@ widgetFile = (if development then widgetFileReload
               widgetFileSettings
 
 data Extra = Extra
-    { extraCopyright :: Text
-    , extraAnalytics :: Maybe Text -- ^ Google Analytics
+    { ldapurl :: String
+    , ldapdn  :: String
+    , ldappassword :: String
+    , smtpserver :: String
+    , emailfrom :: Text
+    , emailuser :: String
+    , emailpassword :: String
     } deriving Show
 
 parseExtra :: DefaultEnv -> Object -> Parser Extra
 parseExtra _ o = Extra
-    <$> o .:  "copyright"
-    <*> o .:? "analytics"
+    <$> o .: "ldapurl"
+    <*> o .: "ldapdn"
+    <*> o .: "ldappassword"
+    <*> o .: "smtpserver"
+    <*> o .: "emailfrom"
+    <*> o .: "emailuser"
+    <*> o .: "emailpassword"

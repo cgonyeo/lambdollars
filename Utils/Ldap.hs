@@ -26,10 +26,11 @@ getValue v attrs = case getValues v attrs of
 
 getUsersLdap :: Text -> Handler LdapUser
 getUsersLdap uid = do
+    conf <- getExtra
     (entries,finentries) <- liftBase $ do
                   print $ "Fetching uid " ++ (unpack uid)
-                  l <- ldapInitialize "ldaps://ldap.csh.rit.edu"
-                  ldapSimpleBind l "uid=dgonyeo,ou=users,dc=csh,dc=rit,dc=edu" "stealthin1210393"
+                  l <- ldapInitialize (ldapurl conf)
+                  ldapSimpleBind l (ldapdn conf) (ldappassword conf)
                   entries <- ldapSearch
                               l
                               (Just "dc=csh,dc=rit,dc=edu")

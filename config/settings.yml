@@ -2,8 +2,13 @@ Default: &defaults
   host: "*4" # any IPv4 host
   port: 3000
   approot: "http://localhost:3000"
-  copyright: Insert copyright statement here
-  #analytics: UA-YOURCODE
+  ldapurl: "ldaps://ldap.csh.rit.edu"
+  ldapdn: "uid=dgonyeo,ou=users,dc=csh,dc=rit,dc=edu"
+  ldappassword: "lolpassword"
+  smtpserver: "mail.csh.rit.edu"
+  emailfrom: "dgonyeo@csh.rit.edu"
+  emailuser: "dgonyeo"
+  emailpassword: "lolpassword"
 
 Development:
   <<: *defaults
@@ -15,5 +20,4 @@ Staging:
   <<: *defaults
 
 Production:
-  #approot: "http://www.example.com"
   <<: *defaults

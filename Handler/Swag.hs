@@ -24,6 +24,7 @@ postSwagBuyR sidi = do
     user <- getUser `fmap` waiRequest
     (LdapUser cn mail act onfl _) <- getLdapUser
     ((result, widget), enctype) <- runFormPost $ swagBuyForm
+    conf <- getExtra
     case result of
         FormSuccess (SwagBuy num) -> do
             msg <- runDB $ do
@@ -47,7 +48,14 @@ postSwagBuyR sidi = do
                                    let to      = pack $ "financial@csh.rit.edu"
                                        subject = pack $ "Order placed by " ++ (unpack cn) ++ " for " ++ (show num) ++ " of " ++ (unpack n)
                                        message = pack $ (unpack cn) ++ " should be reachable at " ++ (unpack mail) ++ " Active: " ++ (show act) ++ " On Floor: " ++ (show onfl)
-                                   liftBase $ sendEmail to subject message
+                                   liftBase $ sendEmail
+                                                (smtpserver conf)
+                                                (emailfrom conf)
+                                                (emailuser conf)
+                                                (emailpassword conf)
+                                                to
+                                                subject
+                                                message
                                    return "Order successful"
                                else return $ "We only have " ++ (show a) ++ " of those in stock. You asked for " ++ (show num) ++ "."
                     Nothing -> return "You seem to have requested nonexistent swag. Please try again, or email financial@csh.rit.edu with what you want."
