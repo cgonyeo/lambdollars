@@ -29,3 +29,9 @@ User
     mail [Text]
     rank Int64
     Primary username
+
+Dues
+    username Text
+    year Int64
+    spring Bool
+    onfloor Bool

@@ -4,6 +4,9 @@
 
 / HomeR GET
 
+/ldaping LdapingR GET
+/ldaped LdapedR GET
+
 /swag SwagR GET
 /swag/buy/#Int SwagBuyR POST
 /swag/edit SwagAdminR GET
@@ -12,5 +15,4 @@
 /swag/orders SwagOrdersR GET
 /swag/orders/#Int SwagOrdersPR POST
 
-/ldaping LdapingR GET
-/ldaped LdapedR GET
+/dues DuesR GET

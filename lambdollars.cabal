@@ -17,6 +17,7 @@ library
                      Import
                      Model
                      Utils
+                     Utils.Calendar
                      Utils.Email
                      Utils.Ldap
                      Utils.Protobuf
@@ -25,6 +26,7 @@ library
                      Settings
                      Settings.StaticFiles
                      Settings.Development
+                     Handler.Dues
                      Handler.Home
                      Handler.Swag
                      Handler.SwagForms
@@ -90,6 +92,7 @@ library
                  , protobuf                      >= 0.2        && <0.3
                  , cereal                        >= 0.4        && <0.5
                  , smtp-mail                     >= 0.1.4.0
+                 , time                          >= 1.4.2
 
     -- see https://github.com/yesodweb/yesod/issues/814
     if !os(windows)

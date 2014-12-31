@@ -15,7 +15,7 @@ getSwagR = do
     forms <- mapM (\_ -> generateFormPost swagBuyForm) swags
     let swagsandforms = zip swags forms
     defaultLayout $ do
-        setTitle "Swag"
+        setTitle "CSH Swag"
         $(widgetFile "swag")
 
 postSwagBuyR :: Int -> Handler Html

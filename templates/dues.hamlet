@@ -1,0 +1,45 @@
+<h1>CSH Dues
+$if fina
+    <div .row>
+        <p>
+            <a href="">Manage Dues
+<h3>Hi #{cn} (#{user})!
+<p>We are currently in the semester of #{show currsem}.
+<p>According to LDAP, you are
+    $if not act
+        not
+    an active member.
+    $if act
+        You are also an
+        $if onfl
+            on floor member,
+        $else
+            off floor member,
+        so your dues are #{prettyMoney $ amountDue onfl} per semester.
+    $else
+        You don't owe dues, but if you'd like to be an active member again feel free to reach out to either the financial or evaluations director.
+$if act
+    $maybe _ <- mfalldues
+        <p>You have paid fall dues.
+    $nothing
+        <p>You have not paid fall dues yet.
+            $case currsem
+                $of Spring _
+                    It is now spring semester, so please pay your dues immediately. Please email financial@csh.rit.edu.
+                $of Summer _
+                    It is now summer, dues will be collected some time in fall semester.
+                $of Fall _
+                     It is now fall semester. Dues are collected at some point during this semester.
+                     $if onfl
+                        If you were an on floor member at the beginning of the semester, your dues <i>should</i> be automatically charged to your RIT account, and you shouldn't need to do anything.
+    $maybe _ <- mspringdues
+        <p>You have paid spring dues.
+    $nothing
+        <p>You have not paid spring dues yet.
+            $case currsem
+                $of Spring _
+                    It is now spring semester. Dues are collected at some point during (typically the beginning) of this semester.
+                $of Summer _
+                    It is now summer. Spring dues aren't exptected until spring semester, but feel free to also pay your spring dues when paying your fall dues.
+                $of Fall _
+                    It is now fall semester. Spring dues aren't exptected until spring semester, but feel free to also pay your spring dues when paying your fall dues.
