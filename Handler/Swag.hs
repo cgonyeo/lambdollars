@@ -10,7 +10,7 @@ import Handler.SwagForms
 
 getSwagR :: Handler Html
 getSwagR = do
-    (LdapUser cn mail act onfl fina) <- getLdapUser
+    (LdapUser _ _ _ _ fina) <- getLdapUser
     swags <- map entityVal `fmap` (runDB $ selectList [] [Asc SwagCost, Asc SwagName])
     forms <- mapM (\_ -> generateFormPost swagBuyForm) swags
     let swagsandforms = zip swags forms
@@ -22,7 +22,7 @@ postSwagBuyR :: Int -> Handler Html
 postSwagBuyR sidi = do
     let sid = fromIntegral sidi
     user <- getUser `fmap` waiRequest
-    (LdapUser cn mail _ _ _) <- getLdapUser
+    (LdapUser cn mail act onfl _) <- getLdapUser
     ((result, widget), enctype) <- runFormPost $ swagBuyForm
     case result of
         FormSuccess (SwagBuy num) -> do
@@ -44,8 +44,10 @@ postSwagBuyR sidi = do
                                               False
                                    _ <- insert sale
                                    update (SwagKey sid) [SwagAmount =. (a - num)]
-                                   liftBase $ sendEmail "financial@csh.rit.edu" "Order placed" $ pack $ 
-                                       (unpack cn) ++ " wants to buy " ++ (show num) ++ " of " ++ (unpack n)
+                                   let to      = pack $ "financial@csh.rit.edu"
+                                       subject = pack $ "Order placed by " ++ (unpack cn) ++ " for " ++ (show num) ++ " of " ++ (unpack n)
+                                       message = pack $ (unpack cn) ++ " should be reachable at " ++ (unpack mail) ++ " Active: " ++ (show act) ++ " On Floor: " ++ (show onfl)
+                                   liftBase $ sendEmail to subject message
                                    return "Order successful"
                                else return $ "We only have " ++ (show a) ++ " of those in stock. You asked for " ++ (show num) ++ "."
                     Nothing -> return "You seem to have requested nonexistent swag. Please try again, or email financial@csh.rit.edu with what you want."

@@ -44,6 +44,7 @@ postSwagEditR sid = do
                                     [] -> do
                                         _ <- insert (Swag 0 sname sd ld filenamet c a)
                                         return ()
+                                    _ -> error "Math is broken"
                         else let updates = [ SwagName      =. sname
                                            , SwagShortdesc =. sd
                                            , SwagLongdesc  =. ld

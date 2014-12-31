@@ -4,7 +4,6 @@ module Handler.SwagOrders where
 import Import
 import Utils
 import Handler.SwagForms
-import Data.Hashable
 
 getSwagOrdersR :: Handler Html
 getSwagOrdersR = do
@@ -16,13 +15,13 @@ getSwagOrdersR = do
 
     mcswags <- runDB $ mapM (\(Sale uid _ _ _ _ _) -> selectFirst [SwagUid ==. uid ] []) compsales
     let cswags = map (\(Just eswag) -> entityVal eswag) mcswags
-    cforms <- mapM (\(Sale _ _ u n t c) -> generateFormPost $ saveSaleForm n t c) compsales
-    let cformsAndIds = zipWith3 (\(Sale _ sid u _ _ _) (Swag _ name _ _ _ _ _) (fwidg,fenc) -> (u,name,sid,fwidg,fenc)) compsales cswags cforms
+    cforms <- mapM (\(Sale _ _ _ n t c) -> generateFormPost $ saveSaleForm n t c) compsales
+    let cformsAndIds = zipWith3 (\(Sale _ sid u _ _ _) (Swag _ sname _ _ _ _ _) (fwidg,fenc) -> (u,sname,sid,fwidg,fenc)) compsales cswags cforms
 
     mncswags <- runDB $ mapM (\(Sale uid _ _ _ _ _) -> selectFirst [SwagUid ==. uid ] []) ncompsales
     let ncswags = map (\(Just eswag) -> entityVal eswag) mncswags
-    ncforms <- mapM (\(Sale _ _ u n t c) -> generateFormPost $ saveSaleForm n t c) ncompsales
-    let ncformsAndIds = zipWith3 (\(Sale _ sid u _ _ _) (Swag _ name _ _ _ _ _) (fwidg,fenc) -> (u,name,sid,fwidg,fenc)) ncompsales ncswags ncforms
+    ncforms <- mapM (\(Sale _ _ _ n t c) -> generateFormPost $ saveSaleForm n t c) ncompsales
+    let ncformsAndIds = zipWith3 (\(Sale _ sid u _ _ _) (Swag _ sname _ _ _ _ _) (fwidg,fenc) -> (u,sname,sid,fwidg,fenc)) ncompsales ncswags ncforms
 
     defaultLayout $ do
         setTitle "Swag Orders"
