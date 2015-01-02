@@ -1,4 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
 module Utils.Email where
 
 import Import
